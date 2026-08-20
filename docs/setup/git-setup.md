@@ -33,7 +33,7 @@ git remote add origin https://github.com/mixedjames/reconsquad.git
 Create a personal access access token. It must have...
 - Meta (read-only)
 - Contents (read-write)
-- Actions (read-write; important later)
+- Workflows (read-write; important later)
 
 Then connect the two. There is a better way of doing this, but for now we do:
 ```
