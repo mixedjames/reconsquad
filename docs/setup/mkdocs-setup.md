@@ -5,8 +5,7 @@
 site_name: ReconSquad Development Site
 theme:
   name: material
-plugins:
-  - blog
+
 nav:
   - Home: index.md
   - Journal: journal/index.md
@@ -18,6 +17,10 @@ name: docs
 on:
   push:
     branches: [main]
+
+permissions:
+  contents: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -29,3 +32,12 @@ jobs:
       - run: pip install mkdocs-material
       - run: mkdocs gh-deploy --force
 ```
+
+## (3) Set up GitHub Pages
+
+First: add, commit and push the above.
+
+The goto repo Settings -> Pages.
+Select deploy from branch: `gh-pages`.
+
+That's it.

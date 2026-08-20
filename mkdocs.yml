@@ -1,6 +1,6 @@
 site_name: ReconSquad Development Site
 theme:
-  name: material
+  name: readthedocs
 
 nav:
   - Home: index.md
