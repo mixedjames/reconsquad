@@ -7,16 +7,29 @@ public final class L2D {
   private float c_;
 
   public L2D(float a, float b, float c) {
+
+    if (!Float.isFinite(a) || !Float.isFinite(b) || !Float.isFinite(c)) {
+      throw new IllegalArgumentException("All parameters must be finite values");
+    }
+
     this.a_ = a;
     this.b_ = b;
     this.c_ = c;
   }
 
-  public static L2D fromPoints(V2D p1, V2D p2) {
+  public static L2D createFromPoints(V2D p1, V2D p2) {
     float a = p2.getY() - p1.getY();
     float b = p1.getX() - p2.getX();
     float c = (p2.getX() * p1.getY()) - (p1.getX() * p2.getY());
     return new L2D(a, b, c);
+  }
+
+  public static L2D createHorizontal(float y) {
+    return new L2D(0, 1, -y);
+  }
+
+  public static L2D createVertical(float x) {
+    return new L2D(1, 0, -x);
   }
 
   public float getA() {

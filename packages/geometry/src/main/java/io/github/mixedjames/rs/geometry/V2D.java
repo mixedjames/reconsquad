@@ -12,6 +12,11 @@ public final class V2D {
   private float y_;
 
   public V2D(float x, float y) {
+
+    if (!Float.isFinite(x) || !Float.isFinite(y)) {
+      throw new IllegalArgumentException("All parameters must be finite values");
+    }
+
     this.x_ = x;
     this.y_ = y;
   }
@@ -33,14 +38,27 @@ public final class V2D {
   }
 
   public void setX(float x) {
+    if (!Float.isFinite(x)) {
+      throw new IllegalArgumentException("x must be finite");
+    }
+
     this.x_ = x;
   }
 
   public void setY(float y) {
+    if (!Float.isFinite(y)) {
+      throw new IllegalArgumentException("y must be finite");
+    }
+
     this.y_ = y;
   }
 
   public void set(float x, float y) {
+
+    if (!Float.isFinite(x) || !Float.isFinite(y)) {
+      throw new IllegalArgumentException("x and y must be finite");
+    }
+
     this.x_ = x;
     this.y_ = y;
   }
@@ -66,6 +84,11 @@ public final class V2D {
   }
 
   public V2D scaleSet(float scalar) {
+
+    if (!Float.isFinite(scalar)) {
+      throw new IllegalArgumentException("scalar must be finite");
+    }
+
     this.x_ *= scalar;
     this.y_ *= scalar;
     return this;
@@ -94,10 +117,12 @@ public final class V2D {
   public V2D normalizeSet() {
     float l = this.length();
 
-    if (l != 0) {
-      this.x_ /= l;
-      this.y_ /= l;
+    if (l == 0) {
+      throw new IllegalStateException("Cannot normalize a zero vector");
     }
+
+    this.x_ /= l;
+    this.y_ /= l;
 
     return this;
   }
@@ -105,11 +130,11 @@ public final class V2D {
   public static V2D normalize(V2D v) {
     float l = v.length();
 
-    if (l != 0) {
-      return new V2D(v.x_ / l, v.y_ / l);
+    if (l == 0) {
+      throw new IllegalStateException("Cannot normalize a zero vector");
     }
 
-    return new V2D(0, 0);
+    return new V2D(v.x_ / l, v.y_ / l);
   }
 
   public V2D invertSet() {

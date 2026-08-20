@@ -1,10 +1,9 @@
 package io.github.mixedjames.rs.geometry;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
-
-import main.java.io.github.mixedjames.rs.geometry.V2D;
 
 public class V2DTest {
 
@@ -78,5 +77,37 @@ public class V2DTest {
     assertEquals(v1, v2);
     assertEquals(v1.hashCode(), v2.hashCode());
     assertEquals(false, v1.equals(v3));
+  }
+
+  @Test
+  public void testInvalidConstructorArguments() {
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new V2D(Float.NaN, 0);
+        },
+        "Expected constructor to throw, but it didn't");
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new V2D(Float.NEGATIVE_INFINITY, 0);
+        },
+        "Expected constructor to throw, but it didn't");
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new V2D(0, Float.NaN);
+        },
+        "Expected constructor to throw, but it didn't");
+
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new V2D(0, Float.NEGATIVE_INFINITY);
+        },
+        "Expected constructor to throw, but it didn't");
   }
 }

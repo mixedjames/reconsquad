@@ -8,6 +8,8 @@ public final class Intersections {
 
   public static boolean lineLine(L2D l1, L2D l2, V2D intersection) {
 
+    // https://math.stackexchange.com/questions/25171/intersection-of-two-lines-in-2d
+
     float a1 = l1.getA();
     float b1 = l1.getB();
     float c1 = l1.getC();
