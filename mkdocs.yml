@@ -1,8 +1,7 @@
 site_name: ReconSquad Development Site
 theme:
   name: material
-plugins:
-  - blog
+
 nav:
   - Home: index.md
   - Journal: journal/index.md
