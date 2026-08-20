@@ -1,0 +1,41 @@
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Gradle wrapper distribution cache (if using local distribution)
+gradle-app.setting
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# VS Code
+.vscode/
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Logs
+*.log
+hs_err_pid*
+
+# MkDocs generated site (built by CI, not committed)
+site/
+
+# Java compiled artifacts (in case anything ends up outside build/)
+*.class
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
