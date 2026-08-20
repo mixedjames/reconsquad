@@ -1,0 +1,10 @@
+# The Beginning
+
+After some period of faffing and figuring out how to do a Java monorepo today
+we are off.
+
+New now have a Github repo featuring:
+- Gradle as the build system
+- Spotless for formatting
+- JUnit 5 for testing
+- MKDocs and a Github action set up to manage this pages site

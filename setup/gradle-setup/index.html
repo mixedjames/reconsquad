@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Gradle setup - ReconSquad Development Site</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Gradle setup";
+        var mkdocs_page_input_path = "setup/gradle-setup.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> ReconSquad Development Site
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../../journal/">Journal</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">ReconSquad Development Site</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Gradle setup</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="gradle-setup">Gradle setup</h1>
+<p>This file documents how I setup gradle for Recon Squad the first time. No one developing the
+project should ever need to do this - <code>./gradlew</code> (Gradle wrapper) should handle everything but
+I want to record what I did.</p>
+<p>Clearly this is not how most people do it, nor is it how getting starting guides would instruct
+one to do it. But I want to learn. Remember the project goals future James!</p>
+<h2 id="0-goals">(0) Goals</h2>
+<p>Create a Java gradle build setup that supports:
+- Monorepo
+- Subprojects in a <code>packages</code> directory</p>
+<h2 id="1-prerequisites">(1) Prerequisites</h2>
+<ul>
+<li>JDK installed</li>
+<li>Gradle installed</li>
+</ul>
+<h2 id="2-getting-gradle-wrapper-setup-to-work">(2) Getting Gradle wrapper setup to work</h2>
+<p>Create an empty <code>settings.gradle.kts</code> file.</p>
+<p>If you don't, the gradle wrapper setup won't run.</p>
+<h2 id="3-set-up-the-gradle-wrapper">(3) Set up the Gradle wrapper</h2>
+<p>Run <code>gradle wrapper --gradle-version 9.7.1</code></p>
+<p>This will then create...
+- The <code>./.gradle</code> private (local) settings directory
+- The <code>./gradlew</code> and <code>./gradle.bat</code> scripts that allow it to bootstrap itself on new machines
+- The <code>./gradle</code> directory for the gradle version we chose</p>
+<h3 id="dont-do">Don't do...</h3>
+<p>Tutorials generally suggest:
+<code>gradle init --type java-application  --dsl kotlin</code></p>
+<p>I didn't want that because it does too much: it bootstraps the a whole app.</p>
+<p>The I tried:
+<code>gradle init --type basic --dsl kotlin</code>
+([https://docs.gradle.org/current/userguide/build_init_plugin.html#sec:basic]).</p>
+<p>This was better, but still did too much.</p>
+<h2 id="4-settingsgradlekts">(4) ./settings.gradle.kts</h2>
+<p>Minimal version looks like this:</p>
+<pre><code>rootProject.name = &quot;recon-squad&quot;
+include(&quot;packages:demos&quot;, &quot;packages:geometry&quot;)
+</code></pre>
+<h2 id="5-gradlelibsversionstoml">(5) ./gradle/libs.versions.toml</h2>
+<p>Not actually relevant to the minimal version but we create it now so that future sets can
+assume it exists in a legal form:</p>
+<pre><code>[versions]
+
+[libraries]
+
+</code></pre>
+<h2 id="6-buildgradlekts">(6) build.gradle.kts</h2>
+<pre><code>plugins {
+}
+
+subprojects {
+  apply(plugin = &quot;java&quot;)
+
+  repositories {
+    /* Needed so that Gradle knows where to find dependencies */
+    mavenCentral()
+  }
+
+  /* Future James: we originally did this using the syntax that shows up in simple tutorials:
+     java { toolchain { languageVersion } }
+
+     This doesn't work for reasons related to how Gradle's Kotlin DSL works. I can't find an 
+     excellent docs source for this but try:
+     https://discuss.gradle.org/t/gradle-kotlin-problems-with-subprojects-and-plugins/34851
+
+     Anyway, the correct way to do this is to use the configure&lt;JavaPluginExtension&gt; syntax, which
+     is what we have below.
+  */
+  configure&lt;JavaPluginExtension&gt; {
+    toolchain { languageVersion.set(JavaLanguageVersion.of(26)) }
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+  }
+}
+</code></pre>
+<h2 id="7-create-the-package-directory-structure-entry-point">(7) Create the package directory structure &amp; entry point</h2>
+<p>Each package exists as a directory within <code>./packages</code></p>
+<p>Each package directory then contains:
+- <code>build.gradle.kts</code> (see below)
+- <code>src</code> directory (all yours!)
+- <code>build</code> directory (created and owned by Gradle)</p>
+<p>The <code>src</code> directory is, in classic Java style, a hugely verbose mess of subdirectories that you
+must name exactly right or woe betide you!</p>
+<p>Best explained with an example:</p>
+<pre><code>For the package directory:
+./packages/demos/src/
+
+...create...
+main/java/io/github/mixedjames/rs/demos
+</code></pre>
+<p>(VSCode folder name collapsing saves us here!)</p>
+<h2 id="8-per-package-buildgradlekts">(8) Per-package build.gradle.kts</h2>
+<p>Library packages look like this:</p>
+<pre><code>dependencies {}
+</code></pre>
+<p>Executable packages look like this:</p>
+<pre><code>plugins {
+  id(&quot;application&quot;)
+}
+
+application {
+  mainClass.set(&quot;io.github.mixedjames.rs.demos.Main&quot;)
+  applicationDefaultJvmArgs = listOf(&quot;-Dsun.java2d.opengl=true&quot;)
+}
+
+dependencies {
+}
+</code></pre>
+<h2 id="9-build-and-run">(9) Build and run!</h2>
+<p>Global...</p>
+<pre><code>./gradlew build
+./gradlew run
+</code></pre>
+<p>But, by the time you've got more than one executable entry point, you probably don't want to
+do that.</p>
+<p>Locally...</p>
+<pre><code>./gradlew :packages:demos:build
+./gradlew :packages:demos:run
+</code></pre>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
